@@ -2,9 +2,11 @@ name: CI/CD - Pruebas de Integración
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   test:
@@ -14,24 +16,16 @@ jobs:
       - name: Clonar el repositorio
         uses: actions/checkout@v3
 
-      - name: Configurar Node.js y cache de npm
+      - name: Instalar Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "18"
-          cache: "npm"
 
       - name: Instalar dependencias
-        run: npm ci
+        run: npm install
 
       - name: Dar permisos de ejecución a Jest
         run: chmod +x ./node_modules/.bin/jest
 
       - name: Ejecutar pruebas de integración con Jest y Supertest
         run: npm test -- --coverage
-
-      - name: Subir coverage a artifacts (opcional)
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage-report
-          path: coverage
